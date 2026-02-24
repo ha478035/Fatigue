@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fatigue 71題 官方精確版</title>
+    <title>Fatigue 71題 原始檔案對照版</title>
     <style>
         body { font-family: -apple-system, sans-serif; background: #f4f7f6; padding: 15px; margin: 0; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 600px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 20px; }
@@ -20,7 +20,7 @@
 </head>
 <body>
 <div class="container">
-    <h1 id="title">🧠 Fatigue 疲勞風險管理 (71題版)</h1>
+    <h1 id="title">🧠 Fatigue 疲勞風險管理 (1-71題)</h1>
     <div class="progress">
         <span id="q-idx">載入中...</span>
         <button onclick="jumpQ()" style="background:none; border:1px solid #d93025; color:#d93025; border-radius:4px; padding:2px 8px; cursor:pointer;">跳題</button>
@@ -36,10 +36,9 @@
 </div>
 
 <script>
-    [span_2](start_span)[span_3](start_span)// 嚴格對齊 PDF 文字內容[span_2](end_span)[span_3](end_span)
     const quizData = [
         {q: "Window of Circadian Low (WOCL) means the biological clock and the physiological state when person is most sleepy. What is the period of WOCL?", opts: ["0800-1200", "0800-1000", "1200-1600", "0200-0600"], ans: "0200-0600"},
-        {q: "REM transaction with processing this happens during sleep.", opts: ["Learning and Memory", "Body recovery", "Deep sleep", "NREM"], ans: "Learning and Memory"},
+        {q: "REM transaction with processing this happens during sleep.\n( 這一題只有一小部分的題目，只要看到REM就選這格答案\n最大的特徵是答案前面有一個 “-“。 )", opts: ["-Learning and Memory", "-Body recovery", "-Deep sleep", "-NREM"], ans: "-Learning and Memory"},
         {q: "Regarding NREM & REM sleep, which statement is true?", opts: ["NREM is for body recovery", "REM is for mental health", "Both are essential", "All of above"], ans: "All of above"},
         {q: "Generally, the REM sleep accounts for about what percentage of the total sleep time in an average adult?", opts: ["15%", "20%", "25%", "30%"], ans: "25%"},
         {q: "According to AOR, the maximum flying hours in 30 consecutive days shall not exceed:", opts: ["100 hours", "90 hours", "120 hours", "80 hours"], ans: "100 hours"},
@@ -137,7 +136,7 @@
         document.getElementById('next').disabled = current === quizData.length - 1;
     }
     function changeQ(s) { current += s; render(); }
-    function jumpQ() { const n = prompt("輸入題號 (1-71):"); if(n > 0 && n <= 71) { current = n-1; render(); } }
+    function jumpQ() { const n = prompt("輸入題號 (1-71):"); if(n > 0 && n <= 71) { current = parseInt(n)-1; render(); } }
     window.onload = render;
 </script>
 </body>
