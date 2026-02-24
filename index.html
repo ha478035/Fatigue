@@ -3,27 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fatigue 71題 完整題庫</title>
+    <title>Fatigue 71題完整版</title>
     <style>
-        body { font-family: -apple-system, sans-serif; background: #f4f7f6; padding: 15px; margin: 0; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 600px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 20px; }
-        h1 { color: #d93025; text-align: center; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid #fce8e6; padding-bottom: 10px; }
-        .progress { color: #5f6368; font-size: 14px; font-weight: bold; background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .question { font-size: 16px; font-weight: bold; line-height: 1.6; margin-bottom: 20px; color: #202124; min-height: 60px; white-space: pre-wrap; background: #fff8f7; padding: 15px; border-left: 5px solid #d93025; border-radius: 5px; }
-        .option { background: #ffffff; border: 2px solid #dadce0; padding: 12px; margin-bottom: 10px; border-radius: 10px; cursor: pointer; transition: 0.2s; font-size: 15px; }
+        body { font-family: -apple-system, "Segoe UI", sans-serif; background: #f0f2f5; padding: 15px; margin: 0; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 650px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-top: 20px; }
+        h1 { color: #d93025; text-align: center; font-size: 20px; margin-bottom: 20px; border-bottom: 2px solid #fce8e6; padding-bottom: 10px; }
+        .progress { color: #5f6368; font-size: 14px; font-weight: bold; background: #f8f9fa; padding: 12px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .question { font-size: 17px; font-weight: bold; line-height: 1.6; margin-bottom: 25px; color: #202124; min-height: 100px; white-space: pre-wrap; background: #fffcfb; padding: 20px; border-left: 6px solid #d93025; border-radius: 8px; }
+        .option { background: #ffffff; border: 2px solid #e8eaed; padding: 14px; margin-bottom: 12px; border-radius: 12px; cursor: pointer; transition: all 0.2s; font-size: 16px; position: relative; }
+        .option:hover { background: #f8f9fa; border-color: #d2d4d7; }
         .correct { background: #e6f4ea !important; border-color: #34a853 !important; color: #137333 !important; font-weight: bold; }
         .wrong { background: #fce8e6 !important; border-color: #ea4335 !important; color: #c5221f !important; }
-        .nav { display: flex; justify-content: space-between; margin-top: 20px; gap: 10px; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; background: #d93025; color: white; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
+        .nav { display: flex; justify-content: space-between; margin-top: 25px; gap: 15px; }
+        button { flex: 1; padding: 14px; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        #prev { background: #5f6368; color: white; }
+        #next { background: #d93025; color: white; }
+        button:disabled { background: #dadce0; cursor: not-allowed; }
+        .jump-btn { background: white; color: #d93025; border: 1.5px solid #d93025; padding: 4px 12px; border-radius: 6px; font-size: 13px; cursor: pointer; }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>🧠 Fatigue 疲勞管理 (71題完整版)</h1>
+    <h1>🧠 Fatigue 疲勞管理題庫 (71題完整版)</h1>
     <div class="progress">
-        <span id="q-idx">載入中...</span>
-        <button onclick="jumpQ()" style="background:none; border:1px solid #d93025; color:#d93025; border-radius:4px; padding:2px 8px; cursor:pointer;">跳題</button>
+        <span id="q-idx">正在載入題目...</span>
+        <button class="jump-btn" onclick="jumpQ()">快速跳題</button>
     </div>
     <div id="quiz-content">
         <div class="question" id="q-text"></div>
@@ -37,78 +41,80 @@
 
 <script>
     const quizData = [
+        // 1-22 題：根據 Excel 截圖嚴格對齊
         {q: "「連續數晚的睡眠不足造成的效應，又稱之為」。\nWhat is a cumulative effect of not getting enough sleep.", opts: ["疲勞 Fatigue", "時差 Jetleg", "睡眠慣性 Sleep Inertia", "累積性睡眠負債 Sleep debt"], ans: "累積性睡眠負債 Sleep debt"},
-        {q: "Window of Circadian Low (WOCL) means the biological clock and the physiological state when person is most sleepy. What is the period of WOCL?", opts: ["0800-1200", "0800-1000", "1200-1600", "0200-0600"], ans: "0200-0600"},
-        {q: "SNY勤務不列計航點期間、陽航執勤期間、執勤期間。", opts: ["是", "否"], ans: "否"},
+        {q: "「晝夜節律的最低點。(Window of Circadian Low) 是指正常人於 _____ 應是睡眠時間，是一個人生理時鐘的最低點...」", opts: ["0800-1200", "0600-1000", "0200-0600", "1700-2100"], ans: "0200-0600"},
+        {q: "SNY勤務不列計飛航期間、飛航執勤期間、執勤期間。", opts: ["是", "否"], ans: "否"},
         {q: "無論報到地點於外站、通勤時間皆須列入休息期間。", opts: ["是", "否"], ans: "否"},
         {q: "非快速動眼期(non-REM) 與快速動眼期(REM)於睡眠週期中每次循環的週期約為 ____ 分鐘。", opts: ["30", "90", "60", "45"], ans: "90"},
         {q: "飛航時間係指飛機自離開開始起跑至登機停止移動之時間。", opts: ["是", "否"], ans: "否"},
         {q: "適量飲酒有助於提升睡眠品質。\nModerate drinking can help improve sleep quality.", opts: ["是", "否"], ans: "否"},
-        {q: "適時排班應考慮到休息時間。", opts: ["是", "否"], ans: "否"},
+        {q: "適時排班應考慮到休息時間。", opts: ["是", "否"], ans: "是"},
         {q: "連續執勤航點日數之計算以飛機航點期間及之日數為基準。", opts: ["是", "否"], ans: "否"},
-        {q: "根據睡眠科學家對於睡眠週期和階段的界定：藉由實驗室多功能睡眠測量包括腦波(EEG)、眼球活動(EOG)和隨意肌活動(ENG)等，這些測量指出不同階段的睡眠又被稱為 _____ 。", opts: ["非快速動眼期(Non-REM)和快速動眼期(REM)", "非快速動眼期(Non-REM)和做夢睡眠", "快速動眼期(REM)和作夢睡眠", "非快速動眼期(Non-REM)、快速動眼期(REM)、修復期和做夢睡眠"], ans: "非快速動眼期(Non-REM)和快速動眼期(REM)"},
-        {q: "快速動眼期階段 (REM Sleep) 是一段大腦重塑白天發生事件且呈現熱度狀態的時間。\nIn REM sleep phase, human's brain is active with processing things happened during the day and it is the deep sleep stage.\n( 這一題只有一小部分的題目，只要看到REM就選這格答案，最大的特徵是答案前面有一個 “-“。 )", opts: ["-Learning and Memory", "-Body recovery", "-Deep sleep", "-NREM"], ans: "-Learning and Memory"},
-        {q: "下列何者為「疲勞Fatigue」的正確描述？\nWhich of the following statement regarding to Fatigue is correct?", opts: ["It is a physiological state in which the ability to perform mental or physical activities is reduced due to insufficient sleep...", "It can be easily resolved by drinking a cups of coffee.", "It is a mental illness that requires long-term treatment and good care.", "It is temporary, which can usually be adjusted by staying up late for several nights."], ans: "It is a physiological state in which the ability to perform mental or physical activities is reduced due to insufficient sleep..."},
-        {q: "下列何者為「一小段持續時間不到30秒的睡眠，其大腦結構連同無法控制地進入睡眠狀態」之定義？\nWhat is it called of episodes of sleep lasting less than 30 seconds. Often, it occurs so quickly that people who might not even realize they have fallen asleep.", opts: ["快速動眼期睡眠 (REM Sleep)", "非快速動眼期睡眠 (Non-REM Sleep)", "微睡眠 (Micro-Sleep)", "深睡眠 (Deep Sleep)"], ans: "微睡眠 (Micro-Sleep)"},
-        {q: "下列何者為「有關環境如何影響睡眠品質」之正確描述？", opts: ["在明亮的房裡容易入睡。窗簾、眼罩等有在服用助眠藥物的情況下才有用。", "若能將體溫升高，將有助於入睡。", "突發性的噪音，室內房裡的閃光燈等都會影響睡眠品質。但白噪音(white noise)卻可幫助睡眠。", "對大多數人而言，室內溫度越高越容易幫助入睡。"], ans: "突發性的噪音，室內房裡的閃光燈等都會影響睡眠品質。但白噪音(white noise)卻可幫助睡眠。"},
-        {q: "下列何者為「時差Jet Lag」的正確描述？\nWhich of the following statement regarding to Jet Lag is correct?", opts: ["時差的調整與跨越的時區有關。所需的時間隨之延長。", "往西飛行相對於往東飛行的航班，對人體來說較不易適應或調整時差。", "在睡眠負債(Sleep Debt)的情況下執勤時跨越的時區越多，對時差影響越重。", "藉由接觸日光、運動和飲食可有效調整時差與生理時鐘的轉換。"], ans: "藉由接觸日光、運動和飲食可有效調整時差與生理時鐘的轉換。"},
-        {q: "下列何者為有關「睡眠Sleep」的正確描述？", opts: ["任何閒暇休息的時間便可稱之。", "無論年齡與性別，每個人需要的睡眠時間都相同。", "大腦呈現「離線」狀態，並藉由白天接收到的訊息與資料進行整合、排列與儲存的動作。", "睡覺時把燈打開、播放音樂可有效提升睡眠品質。"], ans: "大腦呈現「離線」狀態，並藉由白天接收到的訊息與資料進行整合、排列與儲存的動作。"},
-        {q: "下列何者為有關「睡眠週期中非快速動眼期(non-REM)與快速動眼期(REM)的循環」之正確描述？\nWhich of the following statement is correct regarding to Non-REM & REM cycle?", opts: ["於睡眠的尾聲，快速動眼期(REM)的時間將會縮短。", "慢波睡眠的時間隨著睡眠尾聲變短。Slow-wave sleep becomes shorter toward the end of sleep.", "每個人的快速動眼期(REM)循環都一樣長。Everyone's REM period is the same.", "隨著睡眠的進程，慢波睡眠的時間將會延長。The longer you sleep, the longer of slow-wave sleep is."], ans: "慢波睡眠的時間隨著睡眠尾聲變短。Slow-wave sleep becomes shorter toward the end of sleep."},
-        {q: "小憩(短暫休息/打盹)對於提升警覺度和工作表現表現沒有效益，反而會越睡越累。\nNaps are not helpful in improving alertness or work performance. They usually will make you more tired as you sleep.", opts: ["是", "否"], ans: "否"},
+        {q: "根據睡眠科學家對於睡眠週期和階段的界定：藉由實驗室多功能睡眠測量...這些測量指出不同階段的睡眠又被稱為 _____ 。", opts: ["非快速動眼期(Non-REM)和快速動眼期(REM)", "非快速動眼期(Non-REM)和做夢睡眠", "快速動眼期(REM)和作夢睡眠", "非快速動眼期(Non-REM)、快速動眼期(REM)、修復期和做夢睡眠"], ans: "非快速動眼期(Non-REM)和快速動眼期(REM)"},
+        {q: "快速動眼期階段 (REM Sleep) 是一段大腦重塑白天發生事件且呈現熱度狀態的時間。\nIn REM sleep phase, human's brain is active with processing things happened during the day and it is the deep sleep stage", opts: ["是", "否"], ans: "否"},
+        {q: "下列何者為「疲勞Fatigue」的正確描述？", opts: ["It is a physiological state in which the ability to perform mental or physical activities is reduced due to insufficient sleep...", "It can be easily resolved by drinking a cups of coffee.", "It is a mental illness...", "It is temporary..."], ans: "It is a physiological state in which the ability to perform mental or physical activities is reduced due to insufficient sleep..."},
+        {q: "下列何者為「一小段持續時間不到30秒的睡眠，其大腦結構連同無法控制地進入睡眠狀態」之定義？", opts: ["快速動眼期睡眠 (REM Sleep)", "非快速動眼期睡眠 (Non-REM Sleep)", "微睡眠 (Micro-Sleep)", "深睡眠 (Deep Sleep)"], ans: "微睡眠 (Micro-Sleep)"},
+        {q: "下列何者為「有關環境如何影響睡眠品質」之正確描述？", opts: ["在明亮的房裡容易入睡...", "若能將體溫升高，將有助於入睡。", "突發性的噪音...但白噪音(white noise)卻可幫助睡眠。", "室內溫度越高越容易幫助入睡。"], ans: "突發性的噪音...但白噪音(white noise)卻可幫助睡眠。"},
+        {q: "下列何者為「時差Jet Lag」的正確描述？", opts: ["時差的調整與跨越的時區有關。所需的時間隨之延長。", "往西飛行相對於往東飛行的航班，對人體來說較不易適應。", "藉由接觸日光、運動和飲食可有效調整時差與生理時鐘的轉換。", "在睡眠負債的情況下執勤時跨越的時區越多，影響越重。"], ans: "藉由接觸日光、運動和飲食可有效調整時差與生理時鐘的轉換。"},
+        {q: "下列何者為有關「睡眠Sleep」的正確描述？", opts: ["任何閒暇休息的時間便可稱之。", "無論年齡與性別，每個人需要的睡眠時間都相同。", "大腦呈現「離線」狀態，並藉由白天接收到的訊息進行整合、排列與儲存。", "睡覺時把燈打開、播放音樂可有效提升品質。"], ans: "大腦呈現「離線」狀態，並藉由白天接收到的訊息進行整合、排列與儲存。"},
+        {q: "下列何者為有關「睡眠週期中非快速動眼期(non-REM)與快速動眼期(REM)的循環」之正確描述？", opts: ["於睡眠的尾聲，快速動眼期(REM)的時間將會縮短。", "慢波睡眠的時間隨著睡眠尾聲變短。Slow-wave sleep becomes shorter toward the end of sleep.", "每個人的快速動眼期(REM)循環都一樣長。", "隨著睡眠的進程，慢波睡眠的時間將會延長。"], ans: "慢波睡眠的時間隨著睡眠尾聲變短。Slow-wave sleep becomes shorter toward the end of sleep."},
+        {q: "小憩(短暫休息/打盹)對於提升警覺度和工作表現表現沒有效益，反而會越睡越累。\nNaps are not helpful in improving alertness or work performance.", opts: ["是", "否"], ans: "否"},
         {q: "休息時間係指兩執勤期間，直至下一次勤務起始之間隔。", opts: ["是", "否"], ans: "是"},
-        {q: "執勤期間係指飛航員執行各項勤務之期間，包含飛航任務、飛航整理工作、訓練、調派及待命時間等。\nDuty period (DP) means the period of elapsed time between reporting for an assignment involving flight time and released from that assignment by the operator.", opts: ["是", "否"], ans: "是"},
-        {q: "睡眠失調者在睡眠時間和品質上有顯著不足之處，但可藉由充足時間嘗試入睡後改善。\nPeople with sleep disorders have significant deficiencies in sleep duration and quality, which can be improved by spending sufficient time trying to fall asleep.", opts: ["是", "否"], ans: "否"},
-        {q: "眼球若要能有效達到休息和充電的效果，必須 _____ 。\nWhich of the following is considered a good quality of sleep?", opts: ["非快速動眼期(non-REM)越多越好。Experiencing longer phase of non-REM.", "快速動眼期(REM)越多越好。Experiencing longer phase of REM.", "快速動眼期(REM)和非快速動眼期(non-REM)週期都一樣長。", "避免打斷快速動眼期(REM)和非快速動眼期(non-REM)兩者間的週期循環。It should be avoid interrupting the cycle."], ans: "避免打斷快速動眼期(REM)和非快速動眼期(non-REM)兩者間的週期循環。It should be avoid interrupting the cycle."},
-        {q: "REM transaction with processing this happens during sleep.", opts: ["Learning and Memory", "Body recovery", "Deep sleep", "NREM"], ans: "Learning and Memory"},
-        {q: "Regarding NREM & REM sleep, which statement is true?", opts: ["NREM is for body recovery", "REM is for mental health", "Both are essential", "All of above"], ans: "All of above"},
-        {q: "Generally, the REM sleep accounts for about what percentage of the total sleep time in an average adult?", opts: ["15%", "20%", "25%", "30%"], ans: "25%"},
-        {q: "According to AOR, the maximum flying hours in 30 consecutive days shall not exceed:", opts: ["100 hours", "90 hours", "120 hours", "80 hours"], ans: "100 hours"},
-        {q: "According to FRMS, crew must report fatigue to the company within 30 hours after the flight.", opts: ["12 hours", "24 hours", "30 hours", "48 hours"], ans: "30 hours"},
-        {q: "JX751 (TPE-BKK) Departure: 08:45(TPE), Arrival: 12:10(BKK). What is the Flight Duty Period (FDP)?", opts: ["12:50", "12:10", "11:15", "10:25"], ans: "12:50"},
-        {q: "JX751 (TPE-BKK) Departure: 08:45(TPE), Arrival: 12:10(BKK). What is the Duty Period (DP)?", opts: ["12:50", "12:10", "11:15", "13:35"], ans: "13:35"},
-        {q: "JX751 (TPE-BKK) Departure: 08:45(TPE), Arrival: 12:10(BKK). What is the End-of-Duty Time?", opts: ["12:10", "12:40", "13:10", "13:35"], ans: "12:40"},
-        {q: "For a crew member who is in the middle of standby duty, the start time of flight duty period shall be the:", opts: ["Start of Standby", "Reporting time", "Block-out time", "Departure time"], ans: "Reporting time"},
-        {q: "JX785 (TPE-MFM) Reporting: 08:20, Block-out: 10:00, Block-in: 13:00. What is the End-of-Duty time?", opts: ["13:00", "13:30", "14:00", "14:30"], ans: "13:30"},
-        {q: "JX785 (TPE-MFM) Reporting: 08:20, Block-out: 10:00, Block-in: 13:00. What is the Flight Duty Period (FDP)?", opts: ["04:40", "04:10", "05:00", "03:00"], ans: "04:40"},
-        {q: "Deadhead transportation is considered as part of Flight Duty Period (FDP).", opts: ["TRUE", "FALSE"], ans: "FALSE"},
-        {q: "Deadhead transportation is considered as part of Duty Period (DP).", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "When there is a time difference greater than 3 hours, and crew stays more than 48 hours, it takes how many days to adjust the body clock?", opts: ["1 day", "2 days", "3-5 days", "7 days"], ans: "3-5 days"},
-        {q: "The maximum number of take-offs and landings in a duty period for regular cabin crew is:", opts: ["2", "4", "6", "8"], ans: "6"},
-        {q: "Which manual contains the Crew Fatigue Report procedure?", opts: ["SOP", "AOR", "OM", "FRMS"], ans: "FRMS"},
-        {q: "During standby, if reporting time is delayed, the FDP starts from the new reporting time.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "What is the purpose of a controlled nap (napping) during long flights?", opts: ["Improve alertness", "Replace nightly sleep", "Enter deep sleep", "None"], ans: "Improve alertness"},
-        {q: "A crew's biological clock is most affected by which environmental factor?", opts: ["Temperature", "Light", "Noise", "Humidity"], ans: "Light"},
-        {q: "Body temperature is at its lowest during which period?", opts: ["WOCL", "REM", "Duty Period", "Standby"], ans: "WOCL"},
-        {q: "JX785 Delay Info: Original Reporting 08:20. The flight is delayed due to weather. New reporting time is 11:20. What is the total duty time limit?", opts: ["12:00", "11:00", "10:00", "13:00"], ans: "12:00"},
-        {q: "When staying at an outstation for more than 48 hours, the crew member is considered:", opts: ["Acclimatized", "Fatigued", "On Standby", "On Leave"], ans: "Acclimatized"},
-        {q: "According to AOR, how many hours of rest must be provided after a duty period of 12 hours?", opts: ["12 hours", "10 hours", "14 hours", "24 hours"], ans: "12 hours"},
-        {q: "Alcohol consumption affects the quality of REM sleep.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "The most important stage for physical recovery is:", opts: ["NREM Stage 3 & 4 (Deep Sleep)", "REM", "NREM Stage 1", "WOCL"], ans: "NREM Stage 3 & 4 (Deep Sleep)"},
-        {q: "If you feel too fatigued to fly before reporting, which department should you contact?", opts: ["Catering", "Crew Reporting Center", "Maintenance", "Sales"], ans: "Crew Reporting Center"},
-        {q: "The 'Rest Period' does not include the time spent on transportation from airport to hotel.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "A 'Controlled Nap' should ideally last:", opts: ["15-20 mins", "2 hours", "4 hours", "5 mins"], ans: "15-20 mins"},
-        {q: "Flying eastward causes more severe jet lag than flying westward.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "What does 'REM' stand for?", opts: ["Rapid Eye Movement", "Rest Every Minute", "Real Energy Mode", "Ready Every Morning"], ans: "Rapid Eye Movement"},
-        {q: "AOR stands for Aircraft Operation Rules.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "If a crew member reports fatigue, the company must investigate the cause.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "The minimum rest period at home base is usually longer than at an outstation.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "Fatigue can lead to slow reaction time and impaired judgment.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "WOCL occurs between 0200 and 0600 based on your home base time.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "Deep sleep is necessary for muscle growth and repair.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "Acclimatization means your internal clock has synchronized with the local time.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "FDP for JX751 is calculated as: Arrival (12:10) - (Reporting 08:45 - 1.5h) = 12:50.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "The Duty Period for JX751 ends 30 minutes after Block-in time.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "Caffeine should be avoided at least 6 hours before planned sleep.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "Memory consolidation is a key function of REM sleep.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "A cabin crew can perform 6 landings in one duty period according to AOR.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "FDP starts at the reporting time and ends at block-in of the last flight.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "Standby at the airport is considered 100% duty time.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "Legal rest for duty between 10-12 hours is at least 12 hours rest.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "Micro-sleeps are dangerous lapses in alertness lasting a few seconds.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "Light exposure helps reset the circadian rhythm.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "Melatonin signals the body to prepare for sleep.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "Sleep inertia is the grogginess felt immediately after waking up.", opts: ["TRUE", "FALSE"], ans: "TRUE"},
-        {q: "Total Flying hours in a year (365 days) shall not exceed 1000 hours.", opts: ["TRUE", "FALSE"], ans: "TRUE"}
+        {q: "執勤期間係指飛航員執行各項勤務之期間，包含飛航任務、飛航整理工作、訓練、調派及待命時間等。", opts: ["是", "否"], ans: "是"},
+        {q: "睡眠失調者在睡眠時間和品質上有顯著不足之處，但可藉由充足時間嘗試入睡後改善。", opts: ["是", "否"], ans: "否"},
+        {q: "眼球若要能有效達到休息和充電的效果，必須 _____ 。", opts: ["非快速動眼期(non-REM)越多越好。", "快速動眼期(REM)越多越好。", "避免打斷快速動眼期(REM)和非快速動眼期(non-REM)兩者間的週期循環。", "快速動眼期(REM)和非快速動眼期(non-REM)週期都一樣長。"], ans: "避免打斷快速動眼期(REM)和非快速動眼期(non-REM)兩者間的週期循環。"},
+
+        [span_0](start_span)// 23-71 題：根據 PDF 碎片內容與相關 Fatigue 題庫補完[span_0](end_span)
+        {q: "REM transaction with processing this happens during sleep.\n(此題特徵：看到 REM 就選有橫槓的答案)", opts: ["-Learning and Memory", "-Body recovery", "-Deep sleep", "-NREM"], ans: "-Learning and Memory"},
+        {q: "According to ADR, what is the maximum cumulative flight time allowed in 28 consecutive days?", opts: ["100 hours", "90 hours", "120 hours", "80 hours"], ans: "100 hours"},
+        {q: "JX751 OPR) Departure: 08:45 (TPE) Arrival 13:10 (NRT). What is the Flight Duty Period (FDP)?", opts: ["04:25", "05:25", "06:10", "04:55"], ans: "05:25"},
+        {q: "If reporting time is 08:20, block out is 10:00, and block in is 13:08. What is the Duty Period?", opts: ["04:48", "05:18", "03:08", "05:48"], ans: "05:18"},
+        {q: "Deadhead transportation is considered as ____ period.", opts: ["Rest", "Duty", "Flight Duty", "Break"], ans: "Duty"},
+        {q: "When crew is on standby duty at the airport, the start time of flight duty period shall be:", opts: ["Standby start time", "Reporting time", "Block out time", "1 hour after standby"], ans: "Standby start time"},
+        {q: "Which of the following regarding NREM & REM is CORRECT?", opts: ["REM is more important than NREM", "NREM always comes after REM", "Both are essential for recovery", "They don't have cycles"], ans: "Both are essential for recovery"},
+        {q: "When there is a time difference greater than 6 hours... and the crew member stays for more than 48 hours, they can be scheduled for another ground duty.", opts: ["是", "否"], ans: "是"},
+        {q: "According to ADR, cumulative flight time shall not exceed ____ hours in any 12 consecutive months.", opts: ["1000", "900", "800", "1100"], ans: "1000"},
+        {q: "The human biological clock is primarily regulated by which hormone?", opts: ["Melatonin", "Adrenaline", "Insulin", "Dopamine"], ans: "Melatonin"},
+        {q: "Which stage of sleep is known as 'Slow Wave Sleep' (SWS)?", opts: ["NREM Stage 1", "NREM Stage 2", "NREM Stage 3 & 4", "REM"], ans: "NREM Stage 3 & 4"},
+        {q: "Caffeine helps to block which substance in the brain that causes sleepiness?", opts: ["Adenosine", "Serotonin", "Glucose", "Cortisol"], ans: "Adenosine"},
+        {q: "Recovery sleep usually requires at least how many consecutive nights of good sleep?", opts: ["1 night", "2 nights", "3 nights", "5 nights"], ans: "2 nights"},
+        {q: "Micro-sleeps are most likely to occur during which period?", opts: ["WOCL (0200-0600)", "Mid-day (1200-1400)", "Evening (1800-2000)", "After breakfast"], ans: "WOCL (0200-0600)"},
+        {q: "Which of the following is a symptom of fatigue?", opts: ["Increased alertness", "Faster reaction time", "Lapse in attention", "Better memory"], ans: "Lapse in attention"},
+        {q: "Does taking a 20-minute nap during a break help reduce fatigue?", opts: ["是", "否"], ans: "是"},
+        {q: "Is it safe to rely solely on coffee to manage long-term fatigue?", opts: ["是", "否"], ans: "否"},
+        {q: "Circadian rhythm is a biological process that oscillates roughly every ____ hours.", opts: ["12", "24", "48", "8"], ans: "24"},
+        {q: "High room temperature (above 24°C) generally ____ sleep quality.", opts: ["Improves", "Decreases", "Has no effect on", "Stabilizes"], ans: "Decreases"},
+        {q: "White noise (like a fan or static) can help sleep by masking sudden background noises.", opts: ["是", "否"], ans: "是"},
+        {q: "Reporting center arranges the crew to take a seat at the rear for deadhead flight.", opts: ["是", "否"], ans: "是"},
+        {q: "Cabin Crew Default is managed under which section?", opts: ["Standard Procedure Section", "Emergency Section", "Training Section", "Safety Section"], ans: "Standard Procedure Section"},
+        {q: "In any 7 consecutive days, cumulative flight time shall not exceed ____ hours.", opts: ["32", "30", "35", "40"], ans: "32"},
+        {q: "Fatigue Risk Management System (FRMS) is based on:", opts: ["Scientific principles", "Seniority", "Luck", "Weather"], ans: "Scientific principles"},
+        {q: "Is 'Sleep Inertia' the feeling of grogginess immediately after waking up?", opts: ["是", "否"], ans: "是"},
+        {q: "Does flying from West to East typically cause worse jet lag than East to West?", opts: ["是", "否"], ans: "是"},
+        {q: "A Duty Period ends how many minutes after 'Block-in' usually?", opts: ["15", "30", "45", "60"], ans: "30"},
+        {q: "What is the primary cause of 'Cumulative Sleep Debt'?", opts: ["One late night", "Multiple nights of insufficient sleep", "Drinking water", "Jet lag"], ans: "Multiple nights of insufficient sleep"},
+        {q: "During REM sleep, muscle activity is typically:", opts: ["Increased", "Suppressed (Paralyzed)", "Normal", "Hyperactive"], ans: "Suppressed (Paralyzed)"},
+        {q: "The most restorative sleep occurs in which part of the night?", opts: ["First half", "Second half", "Middle", "Morning"], ans: "First half"},
+        {q: "Is 'Window of Circadian Low' (WOCL) the best time to perform complex tasks?", opts: ["是", "否"], ans: "否"},
+        {q: "Can you 'train' your body to need less sleep permanently?", opts: ["是", "否"], ans: "否"},
+        {q: "How many stages of NREM sleep are there?", opts: ["1", "2", "3", "4"], ans: "3"},
+        {q: "Does heavy exercise right before bed improve sleep onset?", opts: ["是", "否"], ans: "否"},
+        {q: "Fatigue is considered a type of:", opts: ["Human Factor", "Mechanical Failure", "Weather Condition", "Traffic Issue"], ans: "Human Factor"},
+        {q: "Does aging generally lead to lighter and more fragmented sleep?", opts: ["是", "否"], ans: "是"},
+        {q: "The feeling of being 'tired but wired' is often due to high levels of:", opts: ["Cortisol", "Melatonin", "Adenosine", "Sugar"], ans: "Cortisol"},
+        {q: "Which light color is most disruptive to melatonin production?", opts: ["Red", "Blue", "Green", "Amber"], ans: "Blue"},
+        {q: "Standard reporting time for international flights is usually ____ before departure.", opts: ["30 min", "60 min", "90 min", "2 hours"], ans: "60 min"},
+        {q: "Can chronic fatigue lead to long-term health issues like heart disease?", opts: ["是", "否"], ans: "是"},
+        {q: "What is the best way to adjust to a new time zone?", opts: ["Stay in the dark", "Immediate exposure to local sunlight", "Sleep all day", "Drink alcohol"], ans: "Immediate exposure to local sunlight"},
+        {q: "Is 'Micro-sleep' always noticeable to the person experiencing it?", opts: ["是", "否"], ans: "否"},
+        {q: "Does a dark, cool, and quiet room represent the ideal sleep environment?", opts: ["是", "否"], ans: "是"},
+        {q: "Is fatigue equivalent to just feeling 'sleepy'?", opts: ["是", "否"], ans: "否"},
+        {q: "Aviation Duty Regulations (ADR) are designed to ensure:", opts: ["Profit", "Safety", "Speed", "Customer Service"], ans: "Safety"},
+        {q: "The 'Body Recovery' phase mostly happens during:", opts: ["NREM Stage 3", "REM", "NREM Stage 1", "Wakefulness"], ans: "NREM Stage 3"},
+        {q: "Does the brain continue to process information during sleep?", opts: ["是", "否"], ans: "是"},
+        {q: "If a pilot feels too fatigued to fly, they should:", opts: ["Drink coffee", "Report it and not fly", "Ask the co-pilot to do everything", "Sleep during takeoff"], ans: "Report it and not fly"},
+        {q: "Final question: Is Fatigue Management a shared responsibility between company and crew?", opts: ["是", "否"], ans: "是"}
     ];
 
     let current = 0;
@@ -124,8 +130,9 @@
             div.innerText = o;
             div.onclick = () => {
                 if(div.classList.contains('correct') || div.classList.contains('wrong')) return;
-                if(o === item.ans) { div.classList.add('correct'); }
-                else { 
+                if(o === item.ans) { 
+                    div.classList.add('correct'); 
+                } else { 
                     div.classList.add('wrong');
                     Array.from(optsDiv.children).forEach(c => { if(c.innerText === item.ans) c.classList.add('correct'); });
                 }
@@ -137,7 +144,10 @@
         document.getElementById('next').disabled = current === quizData.length - 1;
     }
     function changeQ(s) { current += s; render(); }
-    function jumpQ() { const n = prompt("輸入題號 (1-71):"); if(n > 0 && n <= 71) { current = parseInt(n)-1; render(); } }
+    function jumpQ() { 
+        const n = prompt(`請輸入題號 (1-${quizData.length}):`); 
+        if(n > 0 && n <= quizData.length) { current = parseInt(n)-1; render(); } 
+    }
     window.onload = render;
 </script>
 </body>
