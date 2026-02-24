@@ -3,26 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fatigue 71題 官方終極版</title>
+    <title>Fatigue 71題 官方正式版</title>
     <style>
         body { font-family: sans-serif; background: #f0f2f5; padding: 15px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 600px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         h1 { color: #d93025; text-align: center; font-size: 1.2rem; }
-        .progress { background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-        .question { font-size: 1.1rem; font-weight: bold; line-height: 1.5; margin-bottom: 20px; padding: 10px; border-left: 5px solid #d93025; background: #fffcfb; }
-        .option { background: #fff; border: 1px solid #ddd; padding: 12px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; }
+        .progress-bar { background: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .question { font-size: 1.1rem; font-weight: bold; line-height: 1.5; margin-bottom: 20px; padding: 15px; border-left: 5px solid #d93025; background: #fffcfb; min-height: 80px; }
+        .option { background: #fff; border: 2px solid #ddd; padding: 12px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
         .correct { background: #e6f4ea !important; border-color: #34a853 !important; color: #137333 !important; font-weight: bold; }
         .wrong { background: #fce8e6 !important; border-color: #ea4335 !important; color: #c5221f !important; }
         .nav { display: flex; gap: 10px; margin-top: 20px; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; }
         #prev { background: #5f6368; color: white; }
         #next { background: #d93025; color: white; }
+        .jump-btn { background: #ffffff; color: #d93025; border: 1px solid #d93025; padding: 5px 15px; border-radius: 5px; cursor: pointer; font-size: 14px; }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>🧠 Fatigue 疲勞風險管理 (1-71 完整版)</h1>
-    <div class="progress"><span id="q-idx"></span></div>
+    <div class="progress-bar">
+        <span id="q-idx">載入中...</span>
+        <button class="jump-btn" onclick="jumpToQuestion()">選擇題號</button>
+    </div>
     <div id="q-text" class="question"></div>
     <div id="options"></div>
     <div class="nav">
@@ -32,10 +36,11 @@
 </div>
 
 <script>
+    // 嚴格校對後的 71 題數據
     const quizData = [
         {q: "「連續數晚的睡眠不足造成的效應，又稱之為」。\nWhat is a cumulative effect of not getting enough sleep.", opts: ["疲勞 Fatigue", "時差 Jetleg", "睡眠慣性 Sleep Inertia", "累積性睡眠負債 Sleep debt"], ans: "累積性睡眠負債 Sleep debt"},
-        {q: "「晝夜節律的最低點 (WOCL) 是指正常人於 0200-0600 應是睡眠時間，是一個人生理時鐘的最低點...」", opts: ["0800-1200", "0600-1000", "1200-1600", "0200-0600"], ans: "0200-0600"},
-        {q: "SNY勤務不列計飛航期間、飛航執勤期間、執勤期間。", opts: ["是", "否"], ans: "否"},
+        {q: "「晝夜節律的最低點 (WOCL) 是指正常人於哪個時間應是睡眠時間，是一個人生理時鐘的最低點？」", opts: ["0800-1200", "0600-1000", "0200-0600", "1700-2100"], ans: "0200-0600"},
+        {q: "SNY 勤務不列計飛航期間、飛航執勤期間、執勤期間。", opts: ["是", "否"], ans: "否"},
         {q: "無論報到地點於外站、通勤時間皆須列入休息期間。", opts: ["是", "否"], ans: "否"},
         {q: "非快速動眼期(non-REM) 與快速動眼期(REM)於睡眠週期中每次循環的週期約為 ____ 分鐘。", opts: ["30", "90", "60", "45"], ans: "90"},
         {q: "飛航時間係指報到時間開始起算至飛機停止移動之時間。", opts: ["是", "否"], ans: "否"},
@@ -45,10 +50,10 @@
         {q: "睡眠階段分為哪些？", opts: ["非快速動眼期(Non-REM)和快速動眼期(REM)", "非快速動眼期(Non-REM)和做夢睡眠", "快速動眼期(REM)和作夢睡眠", "修復期和做夢睡眠"], ans: "非快速動眼期(Non-REM)和快速動眼期(REM)"},
         {q: "快速動眼期階段 (REM Sleep) 是一段大腦重塑白天發生事件且呈現熱度狀態的時間，它是深層睡眠階段。", opts: ["是", "否"], ans: "否"},
         {q: "下列何者為「疲勞Fatigue」的正確描述？", opts: ["It is a physiological state in which the ability to perform mental or physical activities is reduced due to insufficient sleep...", "It can be easily resolved by drinking coffee.", "It is a mental illness.", "It is temporary and solved by staying up."], ans: "It is a physiological state in which the ability to perform mental or physical activities is reduced due to insufficient sleep..."},
-        {q: "持續時間不到30秒的睡眠，且無法控制地進入睡眠狀態之定義？", opts: ["快速動眼期睡眠", "非快速動眼期睡眠", "微睡眠 (Micro-Sleep)", "深睡眠"], ans: "微睡眠 (Micro-Sleep)"},
+        {q: "「持續時間不到30秒的睡眠，且無法控制地進入睡眠狀態」之定義？", opts: ["快速動眼期睡眠", "非快速動眼期睡眠", "微睡眠 (Micro-Sleep)", "深睡眠"], ans: "微睡眠 (Micro-Sleep)"},
         {q: "有關環境影響睡眠品質的描述何者正確？", opts: ["在明亮的房裡容易入睡", "體溫升高有助入睡", "突發噪音干擾，但白噪音可幫助睡眠", "室內溫度越高越好"], ans: "突發噪音干擾，但白噪音可幫助睡眠"},
         {q: "下列何者為「時差Jet Lag」的正確描述？", opts: ["時差與跨越時區無關", "往西飛比往東飛難適應", "藉由接觸日光、運動和飲食可有效調整時差", "睡眠負債不影響時差"], ans: "藉由接觸日光、運動和飲食可有效調整時差"},
-        {q: "有關「睡眠Sleep」的描述何者正確？", opts: ["任何閒暇休息即是睡眠", "每個人需要的睡眠時間都相同", "大腦呈現離線狀態，進行訊息整合、排列與儲存", "睡覺時開燈可提升品質"], ans: "大腦呈現離線狀態，進行訊息整合、排列與儲存"},
+        {q: "有關「睡眠Sleep」的描述何者正確？", opts: ["任何閒暇休息即是睡眠", "每個人需要的睡眠時間都相同", "大腦呈現離線狀態，進行訊息整合儲存", "睡覺時開燈可提升品質"], ans: "大腦呈現離線狀態，進行訊息整合儲存"},
         {q: "有關睡眠週期中 non-REM 與 REM 的循環描述何者正確？", opts: ["慢波睡眠的時間隨著睡眠尾聲變短 (Slow-wave sleep becomes shorter toward the end of sleep)", "慢波睡眠的時間隨著睡眠尾聲變長", "每個人的REM循環都一樣長", "REM時間隨睡眠尾聲變短"], ans: "慢波睡眠的時間隨著睡眠尾聲變短 (Slow-wave sleep becomes shorter toward the end of sleep)"},
         {q: "小憩對於提升警覺度和工作表現沒有效益，反而會越睡越累。", opts: ["是", "否"], ans: "否"},
         {q: "休息時間係指兩執勤期間，直至下一次勤務起始之間隔。", opts: ["是", "否"], ans: "是"},
@@ -57,8 +62,8 @@
         {q: "眼球若要有效達到休息和充電效果，必須避免打斷 REM 和 non-REM 的週期循環。", opts: ["是", "否"], ans: "是"},
         {q: "REM transaction with processing this happens during sleep.", opts: ["-Learning and Memory", "-Body recovery", "-Deep sleep", "-NREM"], ans: "-Learning and Memory"},
         {q: "According to ADR, cumulative flight time shall not exceed ____ hours in 28 consecutive days.", opts: ["100", "90", "120", "80"], ans: "100"},
-        {q: "JX751 OPR) Departure: 08:45 (TPE) Arrival 13:10 (NRT). What is the FDP?", opts: ["04:25", "05:25", "06:10", "04:55"], ans: "05:25"},
-        {q: "If reporting 08:20, block out 10:00, block in 13:08. What is the Duty Period?", opts: ["04:48", "05:18", "03:08", "05:48"], ans: "05:18"},
+        {q: "JX751 Departure 08:45 (TPE) Arrival 13:10 (NRT). What is the FDP?", opts: ["04:25", "05:25", "06:10", "04:55"], ans: "05:25"},
+        {q: "Reporting 08:20, block out 10:00, block in 13:08. What is the Duty Period?", opts: ["04:48", "05:18", "03:08", "05:48"], ans: "05:18"},
         {q: "Deadhead transportation is considered as ____ period.", opts: ["Rest", "Duty", "Flight Duty", "Break"], ans: "Duty"},
         {q: "When crew is on airport standby, FDP starts from:", opts: ["Standby start time", "Reporting time", "Block out time", "1 hour after standby"], ans: "Standby start time"},
         {q: "Cumulative flight time shall not exceed ____ hours in 12 consecutive months.", opts: ["1000", "900", "800", "1100"], ans: "1000"},
@@ -80,7 +85,7 @@
         {q: "West to East jet lag is worse.", opts: ["是", "否"], ans: "是"},
         {q: "Duty period ends ____ min after block-in.", opts: ["15", "30", "45", "60"], ans: "30"},
         {q: "Cumulative Sleep Debt cause:", opts: ["Multiple nights of insufficient sleep", "One late night", "Drinking water", "Jet lag"], ans: "Multiple nights of insufficient sleep"},
-        {q: "During REM, muscles are:", opts: ["Suppressed", "Increased", "Normal", "Hyperactive"], ans: "Suppressed"},
+        {q: "During REM, muscles are suppressed.", opts: ["是", "否"], ans: "是"},
         {q: "Restorative sleep happens in:", opts: ["First half of night", "Second half", "Middle", "Morning"], ans: "First half of night"},
         {q: "WOCL is best for complex tasks.", opts: ["是", "否"], ans: "否"},
         {q: "Can you train to need less sleep?", opts: ["是", "否"], ans: "否"},
@@ -107,30 +112,54 @@
     ];
 
     let current = 0;
+
     function render() {
         const item = quizData[current];
         document.getElementById('q-idx').innerText = "題號: " + (current + 1) + " / " + quizData.length;
         document.getElementById('q-text').innerText = item.q;
         const optsDiv = document.getElementById('options');
         optsDiv.innerHTML = '';
+        
         item.opts.forEach(o => {
             const div = document.createElement('div');
             div.className = 'option';
             div.innerText = o;
             div.onclick = function() {
-                if(o === item.ans) { div.classList.add('correct'); }
-                else { 
+                if(o === item.ans) { 
+                    div.classList.add('correct'); 
+                } else { 
                     div.classList.add('wrong'); 
-                    Array.from(optsDiv.children).forEach(c => { if(c.innerText === item.ans) c.classList.add('correct'); });
+                    // 顯示正確答案
+                    Array.from(optsDiv.children).forEach(c => {
+                        if(c.innerText === item.ans) c.classList.add('correct');
+                    });
                 }
+                // 點選後禁用其他選項
                 Array.from(optsDiv.children).forEach(c => c.style.pointerEvents = 'none');
             };
             optsDiv.appendChild(div);
         });
-        document.getElementById('prev').disabled = current === 0;
-        document.getElementById('next').disabled = current === quizData.length - 1;
+        
+        document.getElementById('prev').disabled = (current === 0);
+        document.getElementById('next').disabled = (current === quizData.length - 1);
     }
-    function changeQ(s) { current += s; render(); }
+
+    function changeQ(step) {
+        current += step;
+        render();
+    }
+
+    function jumpToQuestion() {
+        const num = prompt("請輸入題號 (1-" + quizData.length + "):");
+        const idx = parseInt(num) - 1;
+        if(idx >= 0 && idx < quizData.length) {
+            current = idx;
+            render();
+        } else if (num !== null) {
+            alert("請輸入有效的題號！");
+        }
+    }
+
     window.onload = render;
 </script>
 </body>
